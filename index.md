@@ -5,10 +5,13 @@ title: Home
 
 # Colin Weinshenker
 
-[GitHub](https://github.com/caweinshenker) · [npm](https://www.npmjs.com/~cshenks)
+## Writing
 
-## Blog
-
+<ul class="post-list">
 {% for post in site.posts %}
-- [{{ post.title }}]({{ post.url }}) - {{ post.date | date: "%B %d, %Y" }}
+<li>
+  <a href="{{ post.url }}">{{ post.title }}</a>
+  <span class="date">{{ post.date | date: "%B %d, %Y" }}</span>
+</li>
 {% endfor %}
+</ul>
