@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing playwright-mcp-electron: AI Automation for Electron Apps | Colin Weinshenker</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --text: #c9d1d9;
+      --accent: #58a6ff;
+      --muted: #8b949e;
+      --border: #30363d;
+      --code-bg: #161b22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    h1, h2, h3 { margin: 1.5rem 0 1rem; color: #fff; }
+    h1 { font-size: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+    p { margin: 1rem 0; }
+    ul, ol { margin: 1rem 0; padding-left: 2rem; }
+    li { margin: 0.5rem 0; }
+    code {
+      background: var(--code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    pre code { padding: 0; background: none; }
+    .post-meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    .back-link { margin-top: 3rem; display: block; }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1rem 0;
+      color: var(--muted);
+    }
+    nav { margin-bottom: 2rem; }
+    nav a { margin-right: 1rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="https://github.com/caweinshenker">GitHub</a>
+  </nav>
+  <article>
+  <h1>Introducing playwright-mcp-electron: AI Automation for Electron Apps</h1>
+  <p class="post-meta">December 30, 2024</p>
+  <p><strong>playwright-mcp-electron</strong> is a fork of Microsoft’s Playwright MCP that adds support for automating Electron desktop applications through the Model Context Protocol (MCP).</p>
+
+<h2 id="the-problem">The Problem</h2>
+
+<p>The Model Context Protocol has changed how AI assistants interact with tools. Microsoft’s <a href="https://github.com/microsoft/playwright-mcp">@playwright/mcp</a> brought browser automation to MCP, enabling AI to navigate websites, fill forms, and extract data using accessibility-first automation.</p>
+
+<p>But what about desktop applications? Many modern apps are built with Electron—VS Code, Slack, Discord, Notion, and countless others. Until now, there was no way for MCP-compatible AI assistants to interact with these apps.</p>
+
+<h2 id="the-solution">The Solution</h2>
+
+<p><code class="language-plaintext highlighter-rouge">playwright-mcp-electron</code> extends Playwright MCP with full Electron support. Using Playwright’s experimental Electron API, it can:</p>
+
+<ul>
+  <li><strong>Launch and control Electron apps</strong> - Connect to packaged <code class="language-plaintext highlighter-rouge">.app</code> bundles or development builds</li>
+  <li><strong>Navigate using accessibility snapshots</strong> - Same LLM-friendly approach as browser automation</li>
+  <li><strong>Access the main process</strong> - Execute code in Electron’s Node.js main process</li>
+  <li><strong>Manage multiple windows</strong> - Switch between BrowserWindows in multi-window apps</li>
+  <li><strong>Send IPC messages</strong> - Communicate between main and renderer processes</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install </span>playwright-mcp-electron
+</code></pre></div></div>
+
+<p>Or use directly with npx:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx playwright-mcp-electron <span class="nt">--electron-executable</span><span class="o">=</span>/path/to/app <span class="nt">--caps</span><span class="o">=</span>electron
+</code></pre></div></div>
+
+<h3 id="claude-code-setup">Claude Code Setup</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>claude mcp add playwright-electron <span class="nt">--</span> npx playwright-mcp-electron <span class="se">\</span>
+  <span class="nt">--electron-executable</span><span class="o">=</span>/Applications/YourApp.app/Contents/MacOS/YourApp <span class="se">\</span>
+  <span class="nt">--caps</span><span class="o">=</span>electron
+</code></pre></div></div>
+
+<h2 id="available-tools">Available Tools</h2>
+
+<p>All standard Playwright MCP browser tools work with Electron windows:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">browser_snapshot</code> - Get accessibility tree of current window</li>
+  <li><code class="language-plaintext highlighter-rouge">browser_click</code> - Click elements by reference</li>
+  <li><code class="language-plaintext highlighter-rouge">browser_type</code> - Type text into inputs</li>
+  <li><code class="language-plaintext highlighter-rouge">browser_navigate</code> - Navigate to URLs</li>
+</ul>
+
+<p>Plus Electron-specific tools:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">electron_evaluate</code> - Execute JavaScript in the main process</li>
+  <li><code class="language-plaintext highlighter-rouge">electron_windows</code> - List all open BrowserWindows</li>
+  <li><code class="language-plaintext highlighter-rouge">electron_select_window</code> - Switch active window</li>
+  <li><code class="language-plaintext highlighter-rouge">electron_app_info</code> - Get app name, version, paths</li>
+  <li><code class="language-plaintext highlighter-rouge">electron_ipc_send</code> - Send IPC messages to renderer</li>
+</ul>
+
+<h2 id="example-usage">Example Usage</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>User: Click the settings button and enable dark mode
+
+Claude: [uses browser_snapshot to see current UI]
+        [uses browser_click on settings button]
+        [uses browser_snapshot to see settings panel]
+        [uses browser_click on dark mode toggle]
+
+        Done! Dark mode is now enabled.
+</code></pre></div></div>
+
+<p>The AI navigates the app, verifies UI states, and interacts with elements—all through natural language.</p>
+
+<h2 id="why-this-exists">Why This Exists</h2>
+
+<p>I submitted this as a PR to Microsoft’s Playwright MCP, but they declined to maintain Electron support as it’s outside their core scope. So I’m publishing it independently.</p>
+
+<p>The packages:</p>
+
+<ul>
+  <li><strong><a href="https://www.npmjs.com/package/playwright-mcp-electron">playwright-mcp-electron</a></strong> - The MCP server</li>
+  <li><strong><a href="https://www.npmjs.com/package/playwright-electron-mcp">playwright-electron-mcp</a></strong> - Forked Playwright with Electron MCP support</li>
+</ul>
+
+<p>Both are Apache-2.0 licensed with Microsoft credited as a contributor.</p>
+
+<hr />
+
+<p><em><a href="https://github.com/caweinshenker/playwright-mcp">GitHub</a> · <a href="https://www.npmjs.com/package/playwright-mcp-electron">npm</a></em></p>
+
+  <a href="/" class="back-link">&larr; Back to home</a>
+</article>
+
+</body>
+</html>
